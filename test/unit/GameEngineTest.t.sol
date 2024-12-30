@@ -10,10 +10,7 @@ contract GameEngineTest is Test {
     DeployGame deployer;
     GameEngine engine;
 
-    function setUp() public {
-        deployer = new DeployGame();
-        engine = deployer.run();
-    }
+    function setUp() public {}
 
     // GETTER FUNCIONS TEST
 }

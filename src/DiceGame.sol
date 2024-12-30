@@ -36,7 +36,7 @@ contract DiceGame is VRFConsumerBaseV2Plus {
     address private immutable i_vrfCoordinator; // Address of the VRF Coordinator contract.
     bytes32 private immutable i_keyHash; // Key hash for VRF randomness requests.
     uint32 private immutable i_callbackGasLimit; // Gas limit for the callback function.
-    address private immutable i_owner; // Address of the DiceGame contract owner.
+    // address private immutable i_owner; // Address of the DiceGame contract owner.
     uint16 private constant REQUEST_CONFIRMATIONS = 3; // Number of confirmations for VRF request.
     uint32 private constant NUM_WORDS = 1; // Number of random words to request (1 in this case).
 
@@ -48,12 +48,12 @@ contract DiceGame is VRFConsumerBaseV2Plus {
     event DiceLanded(uint256 indexed randomNumber, uint256 indexed result);
 
     /* Modifiers */
-    modifier onlyOwnerCanCall() {
-        if (msg.sender != i_owner) {
-            revert DiceGame__OnlyOwnerIsAllowedToCall();
-        }
-        _;
-    }
+    // modifier onlyOwnerCanCall() {
+    //     if (msg.sender != i_owner) {
+    //         revert DiceGame__OnlyOwnerIsAllowedToCall();
+    //     }
+    //     _;
+    // }
 
     modifier VRFSubscriptionIsSet(uint256 subscriptionId) {
         if (subscriptionId == 0) {
@@ -65,18 +65,13 @@ contract DiceGame is VRFConsumerBaseV2Plus {
     /* Functions */
 
     /* constructor */
-    constructor(
-        uint256 _subscriptionId,
-        address _vrfCoordinator,
-        bytes32 _keyHash,
-        uint32 _callbackGasLimit,
-        address _owner
-    ) VRFConsumerBaseV2Plus(_vrfCoordinator) {
+    constructor(uint256 _subscriptionId, address _vrfCoordinator, bytes32 _keyHash, uint32 _callbackGasLimit)
+        VRFConsumerBaseV2Plus(_vrfCoordinator)
+    {
         i_subscriptionId = _subscriptionId;
         i_vrfCoordinator = _vrfCoordinator;
         i_keyHash = _keyHash;
         i_callbackGasLimit = _callbackGasLimit;
-        i_owner = _owner;
     }
     /* receive function (if exists) */
     /* fallback function (if exists) */
@@ -91,7 +86,7 @@ contract DiceGame is VRFConsumerBaseV2Plus {
      *         This requestId will be later used to calculate the dice result.
      *         It will be called by the GameEngine Contract
      */
-    function rollDice(address user) public onlyOwnerCanCall returns (uint256 requestId) {
+    function rollDice(address user) external returns (uint256 requestId) {
         requestId = _rollDice(user, i_subscriptionId, i_keyHash, i_callbackGasLimit, REQUEST_CONFIRMATIONS, NUM_WORDS);
     }
 
@@ -106,9 +101,8 @@ contract DiceGame is VRFConsumerBaseV2Plus {
      * @notice Validates a user's dice roll bet based on the bet type, bet number, and the dice roll result.
      */
     function validateDiceRoll(DiceGameBetType betType, uint256 betNumber, address user, uint256 requestId)
-        public
+        external
         view
-        onlyOwnerCanCall
         returns (bool)
     {
         uint256 diceResult = s_Results[user][requestId];
@@ -125,6 +119,16 @@ contract DiceGame is VRFConsumerBaseV2Plus {
     }
 
     /* internal */
+
+    /**
+     *
+     * @param diceRoller The address of the user who has rolled the dice/placed the bet
+     * @param subscriptionId The subscription ID that this contract uses for funding requests.
+     * @param keyHash The gas lane key hash value, which is the maximum gas price you are willing to pay for a request in wei.
+     * @param callbackGasLimit The limit for how much gas to use for the callback request to the contract's fulfillRandomWords function.
+     * @param requestConfirmations The number of confirmations the Chainlink node should wait before responding.
+     * @param numWords The number of random values to request.
+     */
     function _rollDice(
         address diceRoller,
         uint256 subscriptionId,
@@ -187,9 +191,9 @@ contract DiceGame is VRFConsumerBaseV2Plus {
         return i_callbackGasLimit;
     }
 
-    function getOwner() external view returns (address) {
-        return i_owner;
-    }
+    // function getOwner() external view returns (address) {
+    //     return i_owner;
+    // }
 
     function getRequestConfirmations() external pure returns (uint16) {
         return REQUEST_CONFIRMATIONS;

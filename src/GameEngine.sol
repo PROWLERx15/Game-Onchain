@@ -119,10 +119,10 @@ contract GameEngine is ReentrancyGuard {
     function placeBet(uint256 bettingAmount, uint256 bet) public moreThanZero(bettingAmount) {} // place a bet
     function resolveBet() public {}
 
-    function playDiceGame(DiceGameBetType betType, uint256 betNumber) public {
-        uint256 requestId = i_DiceGame.rollDice(msg.sender);
-        // i_DiceGame.validateDiceRoll(betType, betNumber, msg.sender, requestId);
-    }
+    // function playDiceGame(DiceGameBetType betType, uint256 betNumber) public {
+    //     uint256 requestId = i_DiceGame.rollDice(msg.sender);
+    //     // i_DiceGame.validateDiceRoll(betType, betNumber, msg.sender, requestId);
+    // }
 
     /* internal */
     /* private */
