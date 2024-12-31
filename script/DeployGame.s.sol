@@ -7,7 +7,7 @@ import {HelperConfig} from "./HelperConfig.s.sol";
 import {Script} from "forge-std/Script.sol";
 
 contract DeployGame is Script {
-    function deployContract() external returns (DiceGame, GameEngine) {
+    function deployContract() external returns (GameEngine, DiceGame, HelperConfig) {
         HelperConfig helperConfig = new HelperConfig();
         HelperConfig.NetworkConfig memory config = helperConfig.getConfig();
         vm.startBroadcast();
@@ -16,7 +16,7 @@ contract DeployGame is Script {
         address diceGameAddress = address(diceGame);
         GameEngine engine = new GameEngine(diceGameAddress);
         vm.stopBroadcast();
-        return (diceGame, engine);
+        return (engine, diceGame, helperConfig);
     }
 
     function run() public {}
